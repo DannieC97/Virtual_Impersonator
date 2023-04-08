@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Navbar with Login and Register</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <link href="index.css" rel="stylesheet">
+    <link rel="icon" href="data:image/x-icon,">
+  </head>
+  
+
+<body>
+  <div class="content-wrapper">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand nav-bar-home" href="index.html">Virtual Impersonator</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+  </button>
+  
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link login-btn" href="login.html">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link register-btn" href="register.html">Register</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <h2 class="no-chars-left text-center my-4"></h2>
+        
+        <div class="col-md-6">
+          <div class="row align-items-center">
+            <div class="col-auto">
+              <div class="form-check form-switch custom-switch">
+                  <input class="form-check-input" type="checkbox" id="ai-switch">
+                  <label class="form-check-label" for="ai-switch">AI Rephrasing</label>
+              </div>
+          </div>
+          
+            <div class="col-auto icon-col">
+              <i class="my-icon" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Utilizing AI technology, this feature refines the text to sound more natural and authentic."></i>
+
+            </div>
+          </div>
+          
+          <div class="card">
+            
+            <div class="card-header">
+              
+            <div class="row align-items-center row-profiles">
+              <div class="col-auto">
+                <div class="profile-pic profile-pic-joe clicked" data-name="Joe Rogan">
+                  <img src="/imgs/k18pXt0DGvlwrSgR8YKtuoM5NGd.jpg" alt="Profile Picture">
+                </div>
+              </div>
+              <div class="col-auto">
+                <div class="profile-pic profile-pic-don" data-name="Donald Trump">
+                  <img src="/imgs/donald.jpg" alt="Profile Picture">
+                </div>
+              </div>
+              <div class="col-auto">
+                <div class="profile-pic profile-pic-don" data-name="Elon Musk">
+                  <img src="/imgs/musk2.avif" alt="Profile Picture">
+                </div>
+              </div>
+
+              <div class="col-auto">
+                <div class="profile-pic profile-pic-don" data-name="Neil Tyson">
+                  <img src="/imgs/neilTysonPic.jpg" alt="Profile Picture">
+                </div>
+              </div>
+              <div class="col-auto">
+                <div class="profile-pic profile-pic-don" data-name="Morgan Freeman">
+                  <img src="/imgs/morganF.jpg" alt="Profile Picture">
+                </div>
+              </div>
+            </div>
+            
+              
+            </div>
+            
+            <div class="card-body">
+              <div class="input-group">
+                <div class="textarea-wrapper">
+                  <textarea class="form-control input-text" rows="6" cols="50" maxlength="300" oninput="checkLength()" id="myTextarea"></textarea>
+                  
+                    <i class="clear-icon" id="clearTextarea"></i>
+                    <div class="icons-container">
+                      <i class=" my-icon-3" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="This feature is exclusively accessible on Google Chrome"></i>
+                    
+                    <i class="microphone-icon" id="microphoneIcon" onclick="toggleSpeechRecognition()"></i>
+                    </div>
+                    
+                  </span>
+                </div>
+              </div>
+              
+              
+              
+              <p id="char-count-text"></p>
+              <div class="row align-items-center">
+                <div class="col-auto">
+                  <button class="btn btn-primary mt-3 audio-btn">Create Audio</button>
+                </div>
+                <div class="col">
+                  <div id="audio-container">
+                    <audio id="my-audio" style="display: none;" controls></audio>
+                  </div>
+
+                  
+                </div>
+              </div>
+              
+              
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+  <div class="footer-container">
+    <div class="bg-light card-footer text-muted">
+      <div class="row align-items-center">
+        <div class="col-12 col-md-4 pr-3">
+          <div class="d-flex align-items-center">
+            <span>Characters left: <span id="char-count">0</span></span>
+            <i class="fa fa-info-circle my-icon-2 ml-2" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="When the character count reaches 0, the text-to-speech functionality will be disabled."></i>
+          </div>
+        </div>
+        <div class="col-12 col-md-4 text-center">
+          <a class="link-footer" href="https://www.linkedin.com/in/daniel-chabi/">Created by Daniel Chabi</a>
+        </div>
+        <div class="col-12 col-md-4">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  
+  
+  
+
+
+
+    
+    
+    
+ <script src="index.js"></script>
+    </body>
+    </html>
