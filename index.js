@@ -7,8 +7,12 @@ const bcrypt = require('bcrypt');
 const path = require('path');
 const axios = require('axios');
 const nodemailer = require('nodemailer');
+const mongoose = require('mongoose');
 const API_Key_ElevenLabs = process.env.API_KEY_ELEVENLABS;
 const API_Key_GPT = process.env.API_KEY_GPT;
+const uri = process.env.uri
+
+
 const { Configuration, OpenAIApi } = require("openai");
 const configuration = new Configuration({
     apiKey: API_Key_GPT,
@@ -35,21 +39,27 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
-// set up MySQL connection
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'daniel',
-  password: '123456',
-  database: 'testSignIn'
-});
-// Connect to MySQL database
-connection.connect((err) => {
-  if (err) throw err;
-  console.log('Connected to MySQL database');
-});
+async function connect(){
+  try{
+    await mongoose.connect(uri)
+    console.log("connected to MongoDB")
+  }
+  catch(error){
+    console.log(error)
+  }
+}
+connect()
 
-// Create a new user registration route
-app.post('/register', (req, res) => {
+
+
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true },
+  email: { type: String, required: true },
+  password: { type: String, required: true }
+});
+const User = mongoose.model('User', userSchema);
+
+app.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
 
   // Validate user input
@@ -58,73 +68,55 @@ app.post('/register', (req, res) => {
   }
 
   // Check if user already exists
-  connection.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
-    if (err) throw err;
-    if (results.length > 0) {
-      return res.status(400).json({ message: 'Email already registered' });
-    }
+  const existingUser = await User.findOne({ email: email });
+  if (existingUser) {
+    return res.status(400).json({ message: 'Email already registered' });
+  }
 
-    try {
-      // Hash password using bcrypt
-      const hashedPassword = await bcrypt.hash(password, 10);
+  try {
+    // Hash password using bcrypt
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-      // Insert new user into database
-      connection.query('INSERT INTO users SET ?', { username, email, password: hashedPassword }, (err, results) => {
-        if (err) throw err;
-        return res.status(200).json({ message: 'User registered successfully' });
-      });
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({ message: 'Server error' });
-    }
-  });
+    // Insert new user into database
+    const user = new User({ username: username, email: email, password: hashedPassword });
+    await user.save();
+    return res.status(200).json({ message: 'User registered successfully' });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Server error' });
+  }
 });
 
-// Create a new user login route
-app.post('/login', (req, res) => {
+
+// Create a login route
+app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   // Validate user input
   if (!email || !password) {
-    return res.status(400).json({ message: 'Please enter all fields' });
+    return res.status(400).json({ message: 'Please enter email and password' });
   }
 
   // Check if user exists and password is correct
-  connection.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
-    if (err) throw err;
-    if (results.length === 0) {
+  const user = await User.findOne({ email: email });
+  if (!user) {
+    return res.status(400).json({ message: 'Invalid email or password' });
+  }
+
+  try {
+    // Compare entered password with hashed password from database
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
 
-    try {
-      // Compare entered password with hashed password from database
-      const isPasswordMatch = await bcrypt.compare(password, results[0].password);
-      if (!isPasswordMatch) {
-        return res.status(400).json({ message: 'Invalid email or password' });
-      }
-
-      
-
-      res.status(200).json({ message: 'Logged in successfully', username: results[0].username });
-      
-      //res.redirect('/frontend/dashboard')
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({ message: 'Server error' });
-    }
-  });
+    // Return success message with username
+    res.status(200).json({ message: 'Logged in successfully', username: user.username });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Server error' });
+  }
 });
-
-// app.get("/frontend/dashboard", (req, res) => { // Add this route to serve the 'dashboard.html' file
-//   res.sendFile(path.join(__dirname, "frontend/dashboard.html"));
-// });
-// // Retrieve all users from database
-// app.get('/users', (req, res) => {
-//   connection.query('SELECT * FROM users', (err, results) => {
-//     if (err) throw err;
-//     return res.status(200).json(results);
-//   });
-// });
 
 
 app.get('/getText', async (req, res) => {
